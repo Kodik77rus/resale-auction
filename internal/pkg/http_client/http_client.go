@@ -8,12 +8,12 @@ import (
 )
 
 type HttpClient struct {
-	client http.Client
+	client *http.Client
 }
 
 func InitHttpClient() *HttpClient {
 	return &HttpClient{
-		client: http.Client{},
+		client: &http.Client{},
 	}
 }
 
