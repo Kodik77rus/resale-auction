@@ -29,7 +29,7 @@ func InitConfig() (*Config, error) {
 
 	for _, dsp := range dspSlice {
 		if ok := govalidator.IsDialString(dsp); !ok {
-			return nil, errors.Errorf("%s dsp flag variable is not convertible to net addr", dsp)
+			return nil, errors.Errorf("%s dsp flag variable is not convertible to slice net addr", dsp)
 		}
 	}
 
