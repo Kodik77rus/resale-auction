@@ -11,11 +11,13 @@ import (
 type Config struct {
 	PORT                string
 	DSP_CONNECTION_URLS []string
+	LOG_LVL             string
 }
 
 func InitConfig() (*Config, error) {
 	port := flag.String("p", "8080", "server port")
 	dspUrls := flag.String("d", "", "dsp url")
+	logLVL := flag.String("l", "debug", "log lvl")
 
 	flag.Parse()
 
@@ -34,5 +36,6 @@ func InitConfig() (*Config, error) {
 	return &Config{
 		PORT:                *port,
 		DSP_CONNECTION_URLS: dspSlice,
+		LOG_LVL:             *logLVL,
 	}, nil
 }
