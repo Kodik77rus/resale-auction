@@ -22,7 +22,7 @@ func InitConfig() (*Config, error) {
 	flag.Parse()
 
 	if ok := govalidator.IsPort(*port); !ok {
-		return nil, errors.Errorf("%s port flag variable is not int convertible to int", port)
+		return nil, errors.Errorf("%s port flag variable is not convertible to int", port)
 	}
 
 	dspSlice := strings.Split(*dspUrls, ",")
