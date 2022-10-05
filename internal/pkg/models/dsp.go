@@ -1,5 +1,12 @@
 package models
 
+import "net/http"
+
+type DspConfig struct {
+	Endpoint       string
+	RequestHeaders http.Header
+}
+
 type DspBidRequest struct {
 	Id      string       `json:"id"`
 	Imp     []RequestImp `json:"imp"`
