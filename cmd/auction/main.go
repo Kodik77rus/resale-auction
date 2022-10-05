@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"net"
+	"net/http"
 	"os"
 
 	"github.com/Kodik77rus/resale-auction/internal/pkg/config"
@@ -23,6 +25,15 @@ func run() error {
 	}
 
 	initZeroLogger(cnfg)
+
+	mux := &http.ServeMux{}
+
+	if err := http.ListenAndServe(
+		net.JoinHostPort(":", cnfg.PORT),
+		mux,
+	); err != nil {
+		return err
+	}
 
 	return nil
 }
