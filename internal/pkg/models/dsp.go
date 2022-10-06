@@ -7,6 +7,12 @@ type DspConfig struct {
 	RequestHeaders http.Header
 }
 
+type DspBidRequestInfo struct {
+	DspEndpoint    string
+	DspBidRequest  DspBidRequest
+	DspBidResponse DspBidResponse
+}
+
 type DspBidRequest struct {
 	Id      string       `json:"id"`
 	Imp     []RequestImp `json:"imp"`
