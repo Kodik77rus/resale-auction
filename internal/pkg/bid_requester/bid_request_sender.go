@@ -63,6 +63,7 @@ func (b *BidRequester) Send(
 				dsp.RequestHeaders,
 				b.dspTimeout,
 			)
+			dspRespInfo.HttStatusCode = satusCode
 			if err != nil {
 				log.Error().
 					Err(err).
@@ -78,9 +79,9 @@ func (b *BidRequester) Send(
 				return
 			}
 
-			var DspBidResponseDto models.DspBidResponse
+			var dspBidResponseDto models.DspBidResponse
 
-			if err := utils.JsonUnmarshal(respBody, DspBidResponseDto); err != nil {
+			if err := utils.JsonUnmarshal(respBody, dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
 					Interface("dsp", dsp).
@@ -88,6 +89,9 @@ func (b *BidRequester) Send(
 					Msg("failed unmarshal bid response")
 				return
 			}
+
+			dspRespInfo.DspBidResponse = dspBidResponseDto
+
 			DspBidRequestInfo <- dspRespInfo
 		}(dsp)
 	}

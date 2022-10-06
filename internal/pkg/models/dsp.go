@@ -14,6 +14,7 @@ type DspBidRequestInfo struct {
 	DspEndpoint    *url.URL
 	DspBidRequest  DspBidRequest
 	DspBidResponse DspBidResponse
+	HttStatusCode  int
 }
 
 type DspBidRequest struct {
