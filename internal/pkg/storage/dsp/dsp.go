@@ -14,27 +14,23 @@ type DspStorage struct {
 
 func InitDspStorage(
 	config *config.Config,
-) (*DspStorage, error) {
+) *DspStorage {
 	dsps := make([]*models.DspConfig, len(config.DSP_CONNECTION_URLS))
 
 	header := make(http.Header)
 	header.Add("Content-Type", "application/json")
 
 	for _, dspUrl := range config.DSP_CONNECTION_URLS {
-		u, err := url.Parse(dspUrl)
-		if err != nil {
-			return nil, err
-		}
-
-		u.Path = "bid_request"
-
 		dsps = append(dsps, &models.DspConfig{
-			Endpoint:       u,
+			Endpoint: &url.URL{
+				Host: dspUrl,
+				Path: "bid_request",
+			},
 			RequestHeaders: header,
 		})
 	}
 
 	return &DspStorage{
 		Dsps: dsps,
-	}, nil
+	}
 }
