@@ -3,6 +3,6 @@ package models
 import "net"
 
 type Context struct {
-	Ip        net.IP `json:"ip"`
-	UserAgent string `json:"user_agent"`
+	Ip        net.IP `valid:"required,ip" json:"ip"`
+	UserAgent string `valid:"required,alpha" json:"user_agent"`
 }

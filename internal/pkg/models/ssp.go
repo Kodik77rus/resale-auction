@@ -1,13 +1,13 @@
 package models
 
 type SSPResponse struct {
-	Id      string  `json:"id"`
-	Tiles   []Tiles `json:"tiles"`
-	Context Context `json:"context"`
+	Id      string  `valid:"required,alpha" json:"id"`
+	Tiles   []Tiles `valid:"required" json:"tiles"`
+	Context Context `valid:"required" json:"context"`
 }
 
 type Tiles struct {
-	Id    uint    `json:"id"`
-	Width uint    `json:"width"`
-	Ratio float32 `json:"ratio"`
+	Id    uint    `valid:"required,numeric" json:"id"`
+	Width uint    `valid:"required,numeric" json:"width"`
+	Ratio float32 `valid:"required,numeric" json:"ratio"`
 }
