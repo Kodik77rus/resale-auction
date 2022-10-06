@@ -1,6 +1,6 @@
 package models
 
-type SSPResponse struct {
+type SspResponse struct {
 	Id      string  `valid:"required,alpha" json:"id"`
 	Tiles   []Tiles `valid:"required" json:"tiles"`
 	Context Context `valid:"required" json:"context"`

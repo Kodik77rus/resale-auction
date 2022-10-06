@@ -18,15 +18,11 @@ func InitHttpClient() *HttpClient {
 }
 
 func (h HttpClient) POST(
-	rawURL string,
+	fetchUrl *url.URL,
 	data []byte,
 	headers http.Header,
 	timeout time.Duration,
 ) (int, []byte, error) {
-	fetchUrl, err := url.Parse(rawURL)
-	if err != nil {
-		return 0, nil, err
-	}
 
 	httpReq := &http.Request{
 		Method: http.MethodPost,

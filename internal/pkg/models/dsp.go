@@ -1,14 +1,17 @@
 package models
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+)
 
 type DspConfig struct {
-	Endpoint       string
+	Endpoint       *url.URL
 	RequestHeaders http.Header
 }
 
 type DspBidRequestInfo struct {
-	DspEndpoint    string
+	DspEndpoint    *url.URL
 	DspBidRequest  DspBidRequest
 	DspBidResponse DspBidResponse
 }
