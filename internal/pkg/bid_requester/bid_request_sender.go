@@ -5,8 +5,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
-
 	"github.com/Kodik77rus/resale-auction/internal/pkg/config"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/http_client"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/models"
@@ -73,8 +71,8 @@ func (b *BidRequester) Send(
 				return
 			}
 			if satusCode != http.StatusOK {
-				log.Error().
-					Err(errors.Errorf("bid response not ok: %d", satusCode)).
+				log.Warn().
+					Int("status code", satusCode).
 					Interface("bid request info", dspRespInfo).
 					Msg("response to dsp not ok")
 				return
