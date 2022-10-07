@@ -157,8 +157,6 @@ func InitAuction(
 		calculateAuctionParams(validDspsResps, auctionLotsMap)
 		calculateWiners(auctionLotsMap)
 
-		log.Info().Interface("auction result", auctionLotsMap)
-
 		var sspResponseDto models.SspResponse
 
 		sspResponseDto.Id = sspRequestDto.Id
