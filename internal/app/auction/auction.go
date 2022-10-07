@@ -234,9 +234,7 @@ func InitAuction(
 	mu.Handle(
 		"/placements/request",
 		timeOutMiddleware(
-			logMiddleware(
-				http.HandlerFunc(handler),
-			),
+			logMiddleware(http.HandlerFunc(handler)),
 			config.SSP_TIMEOUT,
 		),
 	)
