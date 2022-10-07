@@ -177,6 +177,8 @@ func InitAuction(
 		resp, err := utils.JsonMarshal(sspResponseDto)
 		if err != nil {
 			log.Error().Err(err).Msg("failed marshal auction result")
+			w.WriteHeader(http.StatusNoContent)
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
