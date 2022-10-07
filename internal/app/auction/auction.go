@@ -1,6 +1,7 @@
 package auction
 
 import (
+	"context"
 	"io/ioutil"
 	"math"
 	"net/http"
@@ -165,13 +166,15 @@ func InitAuction(
 
 		for _, sspTiles := range sspRequestDto.Tiles {
 			winerImp, _ := auctionLotsMap[sspTiles.Id]
-			sspResponseDto.Imp = append(sspResponseDto.Imp, models.SspImp{
-				Id:     winerImp[0].Imp.Id,
-				Width:  winerImp[0].Imp.Width,
-				Height: winerImp[0].Imp.Height,
-				Title:  winerImp[0].Imp.Title,
-				Url:    winerImp[0].Imp.Url,
-			})
+			sspResponseDto.Imp = append(
+				sspResponseDto.Imp,
+				models.SspImp{
+					Id:     winerImp[0].Imp.Id,
+					Width:  winerImp[0].Imp.Width,
+					Height: winerImp[0].Imp.Height,
+					Title:  winerImp[0].Imp.Title,
+					Url:    winerImp[0].Imp.Url,
+				})
 		}
 
 		resp, err := utils.JsonMarshal(sspResponseDto)
@@ -186,20 +189,57 @@ func InitAuction(
 	}
 
 	logMiddleware := func(next http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			log.Info().Msgf("%s %s from %v", r.Method, r.URL.Path, r.RemoteAddr)
-			start := time.Now()
-			next.ServeHTTP(w, r)
-			responseTime := time.Since(start)
-			if responseTime.Milliseconds() >= config.SSP_TIMEOUT.Microseconds() {
-				log.Warn().Msgf("%s %s from %v duration: %v to long", r.Method, r.URL.Path, r.RemoteAddr, responseTime)
-			}
-			log.Info().Msgf("%s %s from %v duration: %v", r.Method, r.URL.Path, r.RemoteAddr, responseTime)
-		}
-		return http.HandlerFunc(fn)
+		return http.HandlerFunc(
+			func(w http.ResponseWriter, r *http.Request) {
+				log.Info().Msgf(
+					"%s %s from %v",
+					r.Method,
+					r.URL.Path,
+					r.RemoteAddr,
+				)
+				start := time.Now()
+				next.ServeHTTP(w, r)
+				log.Info().Msgf(
+					"%s %s from %v duration: %v",
+					r.Method,
+					r.URL.Path,
+					r.RemoteAddr,
+					time.Since(start),
+				)
+			})
 	}
 
-	mu.Handle("/placements/request", logMiddleware(http.HandlerFunc(handler)))
+	timeOutMiddleware := func(next http.Handler, duration time.Duration) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx, cancel := context.WithTimeout(r.Context(), duration)
+			defer cancel()
+
+			r = r.WithContext(ctx)
+
+			processDone := make(chan struct{})
+			go func() {
+				next.ServeHTTP(w, r)
+				processDone <- struct{}{}
+			}()
+
+			select {
+			case <-ctx.Done():
+				log.Warn().Msg("ssp timeout!")
+				w.WriteHeader(http.StatusNoContent)
+			case <-processDone:
+			}
+		})
+	}
+
+	mu.Handle(
+		"/placements/request",
+		timeOutMiddleware(
+			logMiddleware(
+				http.HandlerFunc(handler),
+			),
+			config.SSP_TIMEOUT,
+		),
+	)
 }
 
 func calculateAuctionParams(

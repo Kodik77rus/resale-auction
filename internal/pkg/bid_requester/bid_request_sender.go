@@ -23,7 +23,6 @@ func InitBidRequester(
 	httpClient *http_client.HttpClient,
 ) *BidRequester {
 	return &BidRequester{
-		sspTimeout: config.SSP_TIMEOUT,
 		dspTimeout: config.DSP_TIMEOUT,
 		httpClient: httpClient,
 	}
@@ -95,27 +94,9 @@ func (b *BidRequester) Send(
 		}(dsp)
 	}
 
-	timer := time.NewTimer(b.sspTimeout)
-
 	go func() {
 		wg.Wait()
-		timer.Stop()
-		log.Info().Msg("dsp not timeout response")
 		close(DspBidRequestInfo)
-	}()
-
-	go func() {
-		for {
-			select {
-			case _, ok := <-timer.C:
-				if !ok {
-					return
-				}
-				log.Info().Msg("dsp timeout response")
-				close(DspBidRequestInfo)
-				return
-			}
-		}
 	}()
 
 	respSlice := make([]*models.DspBidRequestInfo, 0, dspCount)
