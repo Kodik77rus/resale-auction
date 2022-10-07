@@ -54,8 +54,8 @@ func (b *BidRequester) Send(
 
 			dspRespInfo := models.DspBidRequestInfo{}
 
-			dspRespInfo.DspEndpoint = dsp.Endpoint
-			dspRespInfo.DspBidRequest = bidRequest
+			dspRespInfo.DspInfo = dsp
+			dspRespInfo.DspBidRequest = &bidRequest
 
 			satusCode, respBody, err := b.httpClient.POST(
 				dsp.Endpoint,
@@ -63,7 +63,6 @@ func (b *BidRequester) Send(
 				dsp.RequestHeaders,
 				b.dspTimeout,
 			)
-			dspRespInfo.HttStatusCode = satusCode
 			if err != nil {
 				log.Error().
 					Err(err).
@@ -90,7 +89,7 @@ func (b *BidRequester) Send(
 				return
 			}
 
-			dspRespInfo.DspBidResponse = dspBidResponseDto
+			dspRespInfo.DspBidResponse = &dspBidResponseDto
 
 			DspBidRequestInfo <- dspRespInfo
 		}(dsp)

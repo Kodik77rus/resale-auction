@@ -6,7 +6,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Kodik77rus/resale-auction/internal/app/auction"
+	"github.com/Kodik77rus/resale-auction/internal/pkg/bid_requester"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/config"
+	"github.com/Kodik77rus/resale-auction/internal/pkg/http_client"
+	"github.com/Kodik77rus/resale-auction/internal/pkg/storage/dsp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -26,10 +30,18 @@ func run() error {
 
 	initZeroLogger(cnfg)
 
+	httpClient := http_client.InitHttpClient()
+
+	bidRequester := bid_requester.InitBidRequester(cnfg, httpClient)
+
+	dsps := dsp.InitDspStorage(cnfg)
+
 	mux := &http.ServeMux{}
 
+	auction.InitAuction(cnfg, bidRequester, dsps, mux)
+
 	if err := http.ListenAndServe(
-		net.JoinHostPort(":", cnfg.PORT),
+		net.JoinHostPort("", cnfg.PORT),
 		mux,
 	); err != nil {
 		return err

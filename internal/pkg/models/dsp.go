@@ -11,10 +11,9 @@ type DspConfig struct {
 }
 
 type DspBidRequestInfo struct {
-	DspEndpoint    *url.URL
-	DspBidRequest  DspBidRequest
-	DspBidResponse DspBidResponse
-	HttStatusCode  int
+	DspInfo        *DspConfig
+	DspBidRequest  *DspBidRequest
+	DspBidResponse *DspBidResponse
 }
 
 type DspBidRequest struct {
