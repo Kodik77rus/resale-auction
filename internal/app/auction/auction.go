@@ -90,7 +90,7 @@ func InitAuction(
 		dspBidRequstDto.Id = sspRequestDto.Id
 		dspBidRequstDto.Context = sspRequestDto.Context
 
-		dspImps := make([]models.RequestDspImp, len(sspRequestDto.Tiles))
+		dspImps := make([]models.RequestDspImp, 0, len(sspRequestDto.Tiles))
 
 		for _, imp := range sspRequestDto.Tiles {
 			dspImps = append(
