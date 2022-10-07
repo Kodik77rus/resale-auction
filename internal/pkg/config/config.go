@@ -21,8 +21,8 @@ func InitConfig() (*Config, error) {
 	port := flag.String("p", "8080", "server port")
 	dspUrls := flag.String("d", "", "dsp url")
 	logLVL := flag.String("l", "debug", "log lvl")
-	dspTimeout := flag.Duration("dt", 200, "dsp request timeout")
-	sspTimeout := flag.Duration("st", 250, "ssp request timeout")
+	dspTimeout := flag.Duration("dt", 200, "dsp request millisecond timeout")
+	sspTimeout := flag.Duration("st", 250, "ssp request millisecond timeout")
 
 	flag.Parse()
 
