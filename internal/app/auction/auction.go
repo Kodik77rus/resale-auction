@@ -156,6 +156,14 @@ func InitAuction(
 			validDspsResps = append(validDspsResps, dspResp)
 		}
 
+		if len(validDspsResps) == 0 {
+			log.Warn().
+				Int("request status code", http.StatusNoContent).
+				Msg("no valids dsps responses")
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
 		calculateAuctionParams(validDspsResps, auctionLotsMap)
 		calculateWiners(auctionLotsMap)
 
