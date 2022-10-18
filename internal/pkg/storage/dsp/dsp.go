@@ -15,7 +15,7 @@ type DspStorage struct {
 func InitDspStorage(
 	config *config.Config,
 ) *DspStorage {
-	dsps := make([]*models.DspConfig, len(config.DSP_CONNECTION_URLS))
+	dsps := make([]*models.DspConfig, 0, len(config.DSP_CONNECTION_URLS))
 
 	header := make(http.Header)
 	header.Add("Content-Type", "application/json")
