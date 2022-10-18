@@ -78,6 +78,8 @@ func (b *BidRequester) Send(
 
 			var dspBidResponseDto models.DspBidResponse
 
+			log.Error().Interface("dspBidResponse", dspBidResponseDto)
+
 			if err := utils.JsonUnmarshal(respBody, dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
