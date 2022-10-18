@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	PORT                string
-	DSP_CONNECTION_URLS []string
+	DSP_CONNECTION_URLS []*string
 	LOG_LVL             string
 	SSP_TIMEOUT         time.Duration
 	DSP_TIMEOUT         time.Duration
@@ -31,16 +31,18 @@ func InitConfig() (*Config, error) {
 	}
 
 	dspSlice := strings.Split(*dspUrls, ",")
+	dspConnUrls := make([]*string, 0, len(dspSlice))
 
 	for _, dsp := range dspSlice {
 		if ok := govalidator.IsDialString(dsp); !ok {
 			return nil, errors.Errorf("%s dsp flag variable is not convertible to slice net addr", dsp)
 		}
+		dspConnUrls = append(dspConnUrls, &dsp)
 	}
 
 	return &Config{
 		PORT:                *port,
-		DSP_CONNECTION_URLS: dspSlice,
+		DSP_CONNECTION_URLS: dspConnUrls,
 		LOG_LVL:             *logLVL,
 		SSP_TIMEOUT:         *sspTimeout * time.Millisecond,
 		DSP_TIMEOUT:         *dspTimeout * time.Millisecond,

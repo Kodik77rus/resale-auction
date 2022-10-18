@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -19,19 +18,20 @@ func InitHttpClient() *HttpClient {
 }
 
 func (h HttpClient) POST(
-	fetchUrl *url.URL,
+	fetchUrl *string,
 	data []byte,
-	headers http.Header,
 	timeout time.Duration,
 ) (int, []byte, error) {
 	req, err := http.NewRequest(
 		http.MethodPost,
-		fetchUrl.String(),
+		*fetchUrl,
 		bytes.NewReader(data),
 	)
 	if err != nil {
 		return 0, nil, err
 	}
+
+	req.Header.Set("Content-Type", "application/json")
 
 	return h.sendReq(req, timeout)
 }

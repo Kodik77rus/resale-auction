@@ -28,7 +28,7 @@ func InitBidRequester(
 }
 
 func (b *BidRequester) Send(
-	dsps []*models.DspConfig,
+	dsps []*string,
 	bidRequest *models.DspBidRequest,
 ) ([]*models.DspBidRequestInfo, error) {
 	body, err := utils.JsonMarshal(bidRequest)
@@ -47,7 +47,7 @@ func (b *BidRequester) Send(
 	wg.Add(dspCount)
 
 	for _, dsp := range dsps {
-		go func(dsp *models.DspConfig) {
+		go func(dsp *string) {
 			defer wg.Done()
 
 			var dspRespInfo models.DspBidRequestInfo
@@ -55,12 +55,11 @@ func (b *BidRequester) Send(
 			dspRespInfo.DspInfo = dsp
 			dspRespInfo.DspBidRequest = bidRequest
 
-			log.Info().Str("url", dsp.Endpoint.String()).Msg("start request to dsp")
+			log.Info().Str("url", *dsp).Msg("start request to dsp")
 
 			satusCode, respBody, err := b.httpClient.POST(
-				dsp.Endpoint,
+				dsp,
 				body,
-				dsp.RequestHeaders,
 				b.dspTimeout,
 			)
 			if err != nil {
@@ -73,6 +72,7 @@ func (b *BidRequester) Send(
 			if satusCode != http.StatusOK {
 				log.Warn().
 					Int("status code", satusCode).
+					Str("dsp", *dsp).
 					Interface("bid request info", dspRespInfo).
 					Msg("response to dsp not ok")
 				return
@@ -83,7 +83,7 @@ func (b *BidRequester) Send(
 			if err := utils.JsonUnmarshal(respBody, dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
-					Interface("dsp", dsp).
+					Str("dsp", *dsp).
 					Interface("bid request", bidRequest).
 					Msg("failed unmarshal bid response")
 				return

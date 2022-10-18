@@ -11,7 +11,6 @@ import (
 	"github.com/Kodik77rus/resale-auction/internal/pkg/bid_requester"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/config"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/models"
-	"github.com/Kodik77rus/resale-auction/internal/pkg/storage/dsp"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/utils"
 	"github.com/asaskevich/govalidator"
 	"github.com/rs/zerolog/log"
@@ -22,7 +21,6 @@ type Auction struct{}
 func InitAuction(
 	config *config.Config,
 	bidRequester *bid_requester.BidRequester,
-	dspStorage *dsp.DspStorage,
 	mu *http.ServeMux,
 ) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +86,7 @@ func InitAuction(
 		auctionLotsMap := make(map[uint][]*models.AuctionBid, sspTilesLen)
 
 		for _, sspTile := range sspRequestDto.Tiles {
-			auctionLotsMap[sspTile.Id] = make([]*models.AuctionBid, 0, len(dspStorage.Dsps))
+			auctionLotsMap[sspTile.Id] = make([]*models.AuctionBid, 0, len(config.DSP_CONNECTION_URLS))
 		}
 
 		var dspBidRequstDto models.DspBidRequest
@@ -112,7 +110,7 @@ func InitAuction(
 			)
 		}
 
-		dspsResponsesInfo, err := bidRequester.Send(dspStorage.Dsps, &dspBidRequstDto)
+		dspsResponsesInfo, err := bidRequester.Send(config.DSP_CONNECTION_URLS, &dspBidRequstDto)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -160,6 +158,8 @@ func InitAuction(
 
 		calculateAuctionParams(validDspsResps, auctionLotsMap)
 		calculateWiners(auctionLotsMap)
+
+		log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
 
 		var sspResponseDto models.SspResponse
 

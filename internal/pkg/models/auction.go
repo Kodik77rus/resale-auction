@@ -1,6 +1,6 @@
 package models
 
 type AuctionBid struct {
-	Dsp *DspConfig
+	Dsp *string
 	Imp ResponseDspImp
 }
