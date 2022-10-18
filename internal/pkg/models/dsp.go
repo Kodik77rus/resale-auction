@@ -17,9 +17,9 @@ type DspBidRequestInfo struct {
 }
 
 type DspBidRequest struct {
-	Id      string          `valid:"required,ascii" json:"id"`
-	Imp     []RequestDspImp `valid:"required" json:"imp"`
-	Context Context         `valid:"required" json:"context"`
+	Id      string
+	Imp     []*RequestDspImp
+	Context Context
 }
 
 type RequestDspImp struct {

@@ -68,6 +68,7 @@ func InitAuction(
 			log.Error().
 				Err(err).
 				Int("request status code", http.StatusBadRequest).
+				Interface("ssp request", sspRequestDto).
 				Msg("can't validate ssp request")
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -75,12 +76,16 @@ func InitAuction(
 		if !ok {
 			log.Error().
 				Int("request status code", http.StatusBadRequest).
+				Interface("ssp request", sspRequestDto).
 				Msg("invalid ssp request")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		auctionLotsMap := make(map[uint][]*models.AuctionBid, len(sspRequestDto.Tiles))
+		log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
+
+		sspTilesLen := len(sspRequestDto.Tiles)
+		auctionLotsMap := make(map[uint][]*models.AuctionBid, sspTilesLen)
 
 		for _, sspTile := range sspRequestDto.Tiles {
 			auctionLotsMap[sspTile.Id] = make([]*models.AuctionBid, 0, len(dspStorage.Dsps))
@@ -90,27 +95,24 @@ func InitAuction(
 
 		dspBidRequstDto.Id = sspRequestDto.Id
 		dspBidRequstDto.Context = sspRequestDto.Context
+		dspBidRequstDto.Imp = make([]*models.RequestDspImp, 0, sspTilesLen)
 
-		dspImps := make([]models.RequestDspImp, 0, len(sspRequestDto.Tiles))
-
-		for _, imp := range sspRequestDto.Tiles {
-			dspImps = append(
-				dspImps,
-				models.RequestDspImp{
-					Id:       imp.Id,
-					Minwidth: imp.Width,
+		for _, sspImp := range sspRequestDto.Tiles {
+			dspBidRequstDto.Imp = append(
+				dspBidRequstDto.Imp,
+				&models.RequestDspImp{
+					Id:       sspImp.Id,
+					Minwidth: sspImp.Width,
 					Minheight: uint(
 						math.Floor(
-							float64(imp.Width) * float64(imp.Ratio),
+							float64(sspImp.Width) * float64(sspImp.Ratio),
 						),
 					),
 				},
 			)
 		}
 
-		dspBidRequstDto.Imp = dspImps
-
-		dspsResponsesInfo, err := bidRequester.Send(dspStorage.Dsps, dspBidRequstDto)
+		dspsResponsesInfo, err := bidRequester.Send(dspStorage.Dsps, &dspBidRequstDto)
 		if err != nil {
 			log.Error().
 				Err(err).

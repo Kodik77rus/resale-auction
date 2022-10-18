@@ -29,7 +29,7 @@ func InitBidRequester(
 
 func (b *BidRequester) Send(
 	dsps []*models.DspConfig,
-	bidRequest models.DspBidRequest,
+	bidRequest *models.DspBidRequest,
 ) ([]*models.DspBidRequestInfo, error) {
 	body, err := utils.JsonMarshal(bidRequest)
 	if err != nil {
@@ -50,10 +50,10 @@ func (b *BidRequester) Send(
 		go func(dsp *models.DspConfig) {
 			defer wg.Done()
 
-			dspRespInfo := models.DspBidRequestInfo{}
+			var dspRespInfo models.DspBidRequestInfo
 
 			dspRespInfo.DspInfo = dsp
-			dspRespInfo.DspBidRequest = &bidRequest
+			dspRespInfo.DspBidRequest = bidRequest
 
 			log.Info().Str("url", dsp.Endpoint.String()).Msg("start request to dsp")
 
@@ -79,8 +79,6 @@ func (b *BidRequester) Send(
 			}
 
 			var dspBidResponseDto models.DspBidResponse
-
-			log.Error().Interface("dspBidResponse", dspBidResponseDto)
 
 			if err := utils.JsonUnmarshal(respBody, dspBidResponseDto); err != nil {
 				log.Error().
