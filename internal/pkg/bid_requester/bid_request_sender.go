@@ -80,7 +80,7 @@ func (b *BidRequester) Send(
 
 			var dspBidResponseDto models.DspBidResponse
 
-			if err := utils.JsonUnmarshal(respBody, dspBidResponseDto); err != nil {
+			if err := utils.JsonUnmarshal(respBody, &dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
 					Str("dsp", *dsp).
