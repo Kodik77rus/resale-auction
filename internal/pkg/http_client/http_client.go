@@ -2,7 +2,6 @@ package http_client
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -25,14 +24,16 @@ func (h HttpClient) POST(
 	headers http.Header,
 	timeout time.Duration,
 ) (int, []byte, error) {
-	httpReq := &http.Request{
-		Method: http.MethodPost,
-		URL:    fetchUrl,
-		Header: headers,
-		Body:   io.NopCloser(bytes.NewReader(data)),
+	req, err := http.NewRequest(
+		http.MethodPost,
+		fetchUrl.String(),
+		bytes.NewReader(data),
+	)
+	if err != nil {
+		return 0, nil, err
 	}
 
-	return h.sendReq(httpReq, timeout)
+	return h.sendReq(req, timeout)
 }
 
 func (h *HttpClient) sendReq(
