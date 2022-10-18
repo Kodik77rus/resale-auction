@@ -55,6 +55,8 @@ func (b *BidRequester) Send(
 			dspRespInfo.DspInfo = dsp
 			dspRespInfo.DspBidRequest = &bidRequest
 
+			log.Info().Str("url", dsp.Endpoint.String()).Msg("start request to dsp")
+
 			satusCode, respBody, err := b.httpClient.POST(
 				dsp.Endpoint,
 				body,
