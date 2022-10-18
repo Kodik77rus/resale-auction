@@ -28,6 +28,7 @@ func (h HttpClient) POST(
 		Method: http.MethodPost,
 		URL:    fetchUrl,
 		Header: headers,
+		Proto:  "HTTP/1.1",
 	}
 
 	return h.sendReq(httpReq, timeout)
