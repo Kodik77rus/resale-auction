@@ -1,7 +1,7 @@
 package models
 
 type SspRequest struct {
-	Id      string  `valid:"required,fullwidth" json:"id"`
+	Id      string  `valid:"required,halfwidth" json:"id"`
 	Tiles   []Tiles `valid:"required" json:"tiles"`
 	Context Context `valid:"required" json:"context"`
 }
