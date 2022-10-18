@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"net/url"
 	"strings"
 	"time"
 
@@ -37,7 +38,15 @@ func InitConfig() (*Config, error) {
 		if ok := govalidator.IsDialString(dsp); !ok {
 			return nil, errors.Errorf("%s dsp flag variable is not convertible to slice net addr", dsp)
 		}
-		dspConnUrls = append(dspConnUrls, &dsp)
+
+		dspUrl := url.URL{
+			Scheme: "http",
+			Host:   dsp,
+			Path:   "bid_request",
+		}
+		u := dspUrl.String()
+
+		dspConnUrls = append(dspConnUrls, &u)
 	}
 
 	return &Config{
