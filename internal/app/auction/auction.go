@@ -108,6 +108,8 @@ func InitAuction(
 			)
 		}
 
+		dspBidRequstDto.Imp = dspImps
+
 		dspsResponsesInfo, err := bidRequester.Send(dspStorage.Dsps, dspBidRequstDto)
 		if err != nil {
 			log.Error().
