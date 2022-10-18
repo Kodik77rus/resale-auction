@@ -23,8 +23,9 @@ func InitDspStorage(
 	for _, dspUrl := range config.DSP_CONNECTION_URLS {
 		dsps = append(dsps, &models.DspConfig{
 			Endpoint: &url.URL{
-				Host: dspUrl,
-				Path: "bid_request",
+				Scheme: "http",
+				Host:   dspUrl,
+				Path:   "bid_request",
 			},
 			RequestHeaders: header,
 		})
