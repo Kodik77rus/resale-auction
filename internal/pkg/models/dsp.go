@@ -29,7 +29,7 @@ type RequestDspImp struct {
 }
 
 type DspBidResponse struct {
-	Id  string           `valid:"required,multibyte" json:"id"`
+	Id  string           `valid:"required,fullwidth" json:"id"`
 	Imp []ResponseDspImp `valid:"required" json:"imp"`
 }
 
@@ -37,7 +37,7 @@ type ResponseDspImp struct {
 	Id     uint    `valid:"required,numeric" json:"id"`
 	Width  uint    `valid:"required,numeric" json:"width"`
 	Height uint    `valid:"required,numeric" json:"height"`
-	Title  string  `valid:"required,multibyte" json:"title"`
-	Url    string  `valid:"required,multibyte" json:"url"`
+	Title  string  `valid:"required,fullwidth" json:"title"`
+	Url    string  `valid:"required,fullwidth" json:"url"`
 	Price  float32 `valid:"required,float" json:"price"`
 }
