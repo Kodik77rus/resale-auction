@@ -13,7 +13,6 @@ import (
 )
 
 type BidRequester struct {
-	sspTimeout time.Duration
 	dspTimeout time.Duration
 	httpClient *http_client.HttpClient
 }
