@@ -1,7 +1,7 @@
 package models
 
 type SspRequest struct {
-	Id      string  `valid:"required,alpha" json:"id"`
+	Id      string  `valid:"required,ascii" json:"id"`
 	Tiles   []Tiles `valid:"required" json:"tiles"`
 	Context Context `valid:"required" json:"context"`
 }
@@ -9,7 +9,7 @@ type SspRequest struct {
 type Tiles struct {
 	Id    uint    `valid:"required,numeric" json:"id"`
 	Width uint    `valid:"required,numeric" json:"width"`
-	Ratio float32 `valid:"required,numeric" json:"ratio"`
+	Ratio float32 `valid:"required,float" json:"ratio"`
 }
 
 type SspResponse struct {
