@@ -67,7 +67,7 @@ func InitAuction(
 				Err(err).
 				Int("request status code", http.StatusBadRequest).
 				Interface("ssp request", sspRequestDto).
-				Msg("EMPTY_FIELD")
+				Msg("failed validate ssp request EMPTY_FIELD || WRONG_SCHEMA")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -138,7 +138,7 @@ func InitAuction(
 				log.Error().
 					Err(err).
 					Interface("dsp info", *dspResp).
-					Msg("failed validate dsp response")
+					Msg("failed validate dsp response EMPTY_FIELD || WRONG_SCHEMA")
 				continue
 			}
 			if !ok {
