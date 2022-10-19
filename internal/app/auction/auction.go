@@ -45,7 +45,7 @@ func InitAuction(
 		if ok := utils.IsValidJson(body); !ok {
 			log.Error().
 				Int("request status code", http.StatusBadRequest).
-				Msg("invalid request body")
+				Msg("invalid request body EMPTY_FIELD || WRONG_SCHEMA")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -53,10 +53,10 @@ func InitAuction(
 		var sspRequestDto models.SspRequest
 
 		if err := utils.JsonUnmarshal(body, &sspRequestDto); err != nil {
-			// log.Error().
-			// 	Err(err).
-			// 	Int("request status code", http.StatusInternalServerError).
-			// 	Msg("can't unmarshal request body")
+			log.Error().
+				Err(err).
+				Int("request status code", http.StatusInternalServerError).
+				Msg("can't unmarshal request body EMPTY_FIELD || WRONG_SCHEMA")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
