@@ -260,6 +260,7 @@ func calculateWiners(sspLots map[uint][]*models.AuctionBid) {
 		sort.SliceStable(val, func(i, j int) bool {
 			return val[i].Imp.Price > val[j].Imp.Price
 		})
+		log.Error().Interface("sorted", val).Msg("sorted")
 		sspLots[key] = val
 	}
 }
