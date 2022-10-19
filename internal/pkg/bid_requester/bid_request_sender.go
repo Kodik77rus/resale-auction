@@ -41,7 +41,7 @@ func (b *BidRequester) Send(
 	}
 
 	dspCount := len(dsps)
-	DspBidRequestInfo := make(chan models.DspBidRequestInfo, dspCount)
+	DspBidRequestInfo := make(chan *models.DspBidRequestInfo, dspCount)
 
 	wg := sync.WaitGroup{}
 	wg.Add(dspCount)
@@ -91,7 +91,7 @@ func (b *BidRequester) Send(
 
 			dspRespInfo.DspBidResponse = &dspBidResponseDto
 
-			DspBidRequestInfo <- dspRespInfo
+			DspBidRequestInfo <- &dspRespInfo
 		}(dsp)
 	}
 
@@ -103,7 +103,7 @@ func (b *BidRequester) Send(
 	respSlice := make([]*models.DspBidRequestInfo, 0, dspCount)
 
 	for resp := range DspBidRequestInfo {
-		respSlice = append(respSlice, &resp)
+		respSlice = append(respSlice, resp)
 	}
 
 	return respSlice, nil

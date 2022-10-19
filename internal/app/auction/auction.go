@@ -164,6 +164,8 @@ func InitAuction(
 			return
 		}
 
+		log.Info().Interface("dsp resps", validDspsResps)
+
 		calculateAuctionParams(validDspsResps, auctionLotsMap)
 		calculateWiners(auctionLotsMap)
 
