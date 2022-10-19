@@ -80,7 +80,7 @@ func InitAuction(
 			return
 		}
 
-		log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
+		// log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
 
 		sspTilesLen := len(sspRequestDto.Tiles)
 		auctionLotsMap := make(map[uint][]*models.AuctionBid, sspTilesLen)
@@ -164,12 +164,12 @@ func InitAuction(
 			return
 		}
 
-		log.Info().Interface("dsp resps", validDspsResps)
+		// log.Info().Interface("dsp resps", validDspsResps)
 
 		calculateAuctionParams(validDspsResps, auctionLotsMap)
 		calculateWiners(auctionLotsMap)
 
-		log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
+		// log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
 
 		var sspResponseDto models.SspResponse
 
