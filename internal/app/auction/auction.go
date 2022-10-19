@@ -129,7 +129,7 @@ func InitAuction(
 			return
 		}
 
-		// log.Info().Interface("dsp resps", validDspsResps)
+		log.Info().Interface("dsp resps", dspsResponsesInfo)
 
 		if err := calculateAuctionParams(dspsResponsesInfo, auctionLotsMap); err != nil {
 			w.WriteHeader(http.StatusNoContent)
@@ -153,15 +153,18 @@ func InitAuction(
 				w.WriteHeader(http.StatusNoContent)
 				return
 			}
+			s := models.SspImp{
+				Id:     winerImp[0].Imp.Id,
+				Width:  winerImp[0].Imp.Width,
+				Height: winerImp[0].Imp.Height,
+				Title:  winerImp[0].Imp.Title,
+				Url:    winerImp[0].Imp.Url,
+			}
+			log.Info().Interface("winner", s)
 			sspResponseDto.Imp = append(
 				sspResponseDto.Imp,
-				models.SspImp{
-					Id:     winerImp[0].Imp.Id,
-					Width:  winerImp[0].Imp.Width,
-					Height: winerImp[0].Imp.Height,
-					Title:  winerImp[0].Imp.Title,
-					Url:    winerImp[0].Imp.Url,
-				})
+				s,
+			)
 		}
 
 		resp, err := utils.JsonMarshal(sspResponseDto)
