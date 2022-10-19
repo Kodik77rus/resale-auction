@@ -81,12 +81,12 @@ func (b *BidRequester) Send(
 
 			var dspBidResponseDto models.DspBidResponse
 
-			// if ok := utils.IsValidJson(respBody); !ok {
-			// 	log.Error().
-			// 		Interface("bid request", dspRespInfo).
-			// 		Msg("invalid dsp response body")
-			// 	return
-			// }
+			if ok := utils.IsValidJson(respBody); !ok {
+				log.Error().
+					Interface("bid request", dspRespInfo).
+					Msg("invalid dsp response body")
+				return
+			}
 
 			if err := utils.JsonUnmarshal(respBody, &dspBidResponseDto); err != nil {
 				log.Error().
