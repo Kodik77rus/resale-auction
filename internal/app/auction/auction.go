@@ -138,7 +138,7 @@ func InitAuction(
 
 		calculateWiners(auctionLotsMap)
 
-		// log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
+		log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
 
 		var sspResponseDto models.SspResponse
 
