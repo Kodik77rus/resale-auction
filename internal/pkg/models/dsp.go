@@ -11,7 +11,7 @@ type DspConfig struct {
 }
 
 type DspBidRequestInfo struct {
-	DspInfo        *string
+	DspInfo        string
 	DspBidRequest  *DspBidRequest
 	DspBidResponse *DspBidResponse
 }

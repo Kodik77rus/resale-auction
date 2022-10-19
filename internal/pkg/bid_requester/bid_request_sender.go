@@ -52,7 +52,7 @@ func (b *BidRequester) Send(
 
 			var dspRespInfo models.DspBidRequestInfo
 
-			dspRespInfo.DspInfo = dsp
+			dspRespInfo.DspInfo = *dsp
 			dspRespInfo.DspBidRequest = bidRequest
 
 			log.Info().Str("url", *dsp).Msg("start request to dsp")
