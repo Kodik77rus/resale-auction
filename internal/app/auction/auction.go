@@ -136,7 +136,10 @@ func InitAuction(
 			return
 		}
 
-		calculateWiners(auctionLotsMap)
+		if err := calculateWiners(auctionLotsMap); err != nil {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
 
 		log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
 
@@ -254,13 +257,17 @@ func calculateAuctionParams(
 	return nil
 }
 
-func calculateWiners(sspLots map[uint][]*models.AuctionBid) {
+func calculateWiners(sspLots map[uint][]*models.AuctionBid) error {
 	log.Info().Interface("row", sspLots)
 	for key, val := range sspLots {
+		if len(val) == 0 {
+			return errors.New("empty imp")
+		}
 		sort.SliceStable(val, func(i, j int) bool {
 			return val[i].Imp.Price > val[j].Imp.Price
 		})
 		log.Error().Interface("sorted", val).Msg("sorted")
 		sspLots[key] = val
 	}
+	return nil
 }
