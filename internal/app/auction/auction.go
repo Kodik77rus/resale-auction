@@ -53,10 +53,10 @@ func InitAuction(
 		var sspRequestDto models.SspRequest
 
 		if err := utils.JsonUnmarshal(body, &sspRequestDto); err != nil {
-			log.Error().
-				Err(err).
-				Int("request status code", http.StatusInternalServerError).
-				Msg("can't unmarshal request body")
+			// log.Error().
+			// 	Err(err).
+			// 	Int("request status code", http.StatusInternalServerError).
+			// 	Msg("can't unmarshal request body")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
