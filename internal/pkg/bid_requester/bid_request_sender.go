@@ -73,7 +73,6 @@ func (b *BidRequester) Send(
 			if satusCode != http.StatusOK {
 				log.Warn().
 					Int("status code", satusCode).
-					Str("dsp", *dsp).
 					Interface("bid request info", dspRespInfo).
 					Msg("response to dsp not ok")
 				return
@@ -91,7 +90,6 @@ func (b *BidRequester) Send(
 			if err := utils.JsonUnmarshal(respBody, &dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
-					Str("dsp", *dsp).
 					Interface("bid request", bidRequest).
 					Msg("failed unmarshal bid response")
 				return

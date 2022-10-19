@@ -81,7 +81,7 @@ func InitAuction(
 			return
 		}
 
-		log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
+		log.Info().Interface("ssp request", sspRequestDto).Msg("ssp request")
 
 		sspTilesLen := len(sspRequestDto.Tiles)
 		auctionLotsMap := make(map[uint][]*models.AuctionBid, sspTilesLen)
@@ -143,15 +143,7 @@ func InitAuction(
 			return
 		}
 
-		if err := calculateWinners(auctionLotsMap); err != nil {
-			log.Error().
-				Err(err).
-				Int("request status code", http.StatusNoContent).
-				Interface("auction paramas", auctionLotsMap).
-				Msg("failed calculate winners")
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
+		calculateWinners(auctionLotsMap)
 
 		log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
 
@@ -263,7 +255,7 @@ func calculateAuctionParams(
 	return nil
 }
 
-func calculateWinners(sspLots map[uint][]*models.AuctionBid) error {
+func calculateWinners(sspLots map[uint][]*models.AuctionBid) {
 	for key, val := range sspLots {
 		if len(val) == 0 {
 			delete(sspLots, key)
@@ -274,5 +266,4 @@ func calculateWinners(sspLots map[uint][]*models.AuctionBid) error {
 		})
 		sspLots[key] = val
 	}
-	return nil
 }
