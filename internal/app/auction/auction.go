@@ -1,12 +1,10 @@
 package auction
 
 import (
-	"context"
 	"io/ioutil"
 	"math"
 	"net/http"
 	"sort"
-	"time"
 
 	"github.com/Kodik77rus/resale-auction/internal/pkg/bid_requester"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/config"
@@ -221,37 +219,37 @@ func InitAuction(
 	// 		})
 	// }
 
-	timeOutMiddleware := func(next http.Handler, duration time.Duration) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, cancel := context.WithTimeout(r.Context(), duration)
-			defer cancel()
+	// timeOutMiddleware := func(next http.Handler, duration time.Duration) http.Handler {
+	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 		ctx, cancel := context.WithTimeout(r.Context(), duration)
+	// 		defer cancel()
 
-			r = r.WithContext(ctx)
+	// 		r = r.WithContext(ctx)
 
-			processDone := make(chan struct{})
-			go func() {
-				next.ServeHTTP(w, r)
-				processDone <- struct{}{}
-			}()
+	// 		processDone := make(chan struct{})
+	// 		go func() {
+	// 			next.ServeHTTP(w, r)
+	// 			processDone <- struct{}{}
+	// 		}()
 
-			select {
-			case <-ctx.Done():
-				log.Warn().Msg("ssp timeout!")
-				w.WriteHeader(http.StatusNoContent)
-			case <-processDone:
-			}
-		})
-	}
+	// 		select {
+	// 		case <-ctx.Done():
+	// 			log.Warn().Msg("ssp timeout!")
+	// 			w.WriteHeader(http.StatusNoContent)
+	// 		case <-processDone:
+	// 		}
+	// 	})
+	// }
 
 	mu.Handle(
 		"/placements/request",
-		timeOutMiddleware(
-			// logMiddleware(
-			http.HandlerFunc(handler),
-			// ),
-			config.SSP_TIMEOUT,
-		),
+		// timeOutMiddleware(
+		// logMiddleware(
+		http.HandlerFunc(handler),
+		// ),
+		// config.SSP_TIMEOUT,
 	)
+	// )
 }
 
 func calculateAuctionParams(
