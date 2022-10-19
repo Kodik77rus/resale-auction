@@ -67,7 +67,7 @@ func InitAuction(
 				Err(err).
 				Int("request status code", http.StatusBadRequest).
 				Interface("ssp request", sspRequestDto).
-				Msg("can't validate ssp request")
+				Msg("EMPTY_FIELD")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
