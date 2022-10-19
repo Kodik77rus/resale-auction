@@ -153,17 +153,16 @@ func InitAuction(
 				w.WriteHeader(http.StatusNoContent)
 				return
 			}
-			s := models.SspImp{
-				Id:     winerImp[0].Imp.Id,
-				Width:  winerImp[0].Imp.Width,
-				Height: winerImp[0].Imp.Height,
-				Title:  winerImp[0].Imp.Title,
-				Url:    winerImp[0].Imp.Url,
-			}
-			log.Info().Interface("winner", s)
+			log.Info().Interface("winner", winerImp)
 			sspResponseDto.Imp = append(
 				sspResponseDto.Imp,
-				s,
+				models.SspImp{
+					Id:     winerImp[0].Imp.Id,
+					Width:  winerImp[0].Imp.Width,
+					Height: winerImp[0].Imp.Height,
+					Title:  winerImp[0].Imp.Title,
+					Url:    winerImp[0].Imp.Url,
+				},
 			)
 		}
 
