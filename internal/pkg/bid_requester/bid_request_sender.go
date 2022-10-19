@@ -95,10 +95,8 @@ func (b *BidRequester) Send(
 		}(dsp)
 	}
 
-	go func() {
-		wg.Wait()
-		close(DspBidRequestInfo)
-	}()
+	wg.Wait()
+	close(DspBidRequestInfo)
 
 	respSlice := make([]*models.DspBidRequestInfo, 0, dspCount)
 

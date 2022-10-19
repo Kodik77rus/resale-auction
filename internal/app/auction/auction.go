@@ -136,13 +136,13 @@ func InitAuction(
 			if err != nil {
 				log.Error().
 					Err(err).
-					Interface("dsp info", *dspResp).
+					Interface("dsp info", dspResp).
 					Msg("failed validate dsp response EMPTY_FIELD || WRONG_SCHEMA")
 				continue
 			}
 			if !ok {
 				log.Warn().
-					Interface("dsp info", *dspResp).
+					Interface("dsp info", dspResp).
 					Msg("invalid dsp response")
 				continue
 			}
