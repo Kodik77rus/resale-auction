@@ -175,7 +175,13 @@ func InitAuction(
 		sspResponseDto.Imp = make([]models.SspImp, 0, len(auctionLotsMap))
 
 		for _, sspTiles := range sspRequestDto.Tiles {
-			winerImp, _ := auctionLotsMap[sspTiles.Id]
+			winerImp, ok := auctionLotsMap[sspTiles.Id]
+			if !ok {
+				log.Warn().
+					Int("request status code", http.StatusNoContent)
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
 			sspResponseDto.Imp = append(
 				sspResponseDto.Imp,
 				models.SspImp{
