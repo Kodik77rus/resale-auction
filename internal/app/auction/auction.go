@@ -41,13 +41,13 @@ func InitAuction(
 			return
 		}
 
-		if ok := utils.IsValidJson(body); !ok {
-			log.Error().
-				Int("request status code", http.StatusBadRequest).
-				Msg("invalid request body EMPTY_FIELD || WRONG_SCHEMA")
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+		// if ok := utils.IsValidJson(body); !ok {
+		// 	log.Error().
+		// 		Int("request status code", http.StatusBadRequest).
+		// 		Msg("invalid request body EMPTY_FIELD || WRONG_SCHEMA")
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	return
+		// }
 
 		var sspRequestDto models.SspRequest
 
@@ -79,7 +79,7 @@ func InitAuction(
 			return
 		}
 
-		// log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
+		log.Info().Interface("ssp request", sspRequestDto).Msg("get ssp request")
 
 		sspTilesLen := len(sspRequestDto.Tiles)
 		auctionLotsMap := make(map[uint][]*models.AuctionBid, sspTilesLen)
@@ -146,17 +146,10 @@ func InitAuction(
 		var sspResponseDto models.SspResponse
 
 		sspResponseDto.Id = sspRequestDto.Id
-		sspResponseDto.Imp = make([]models.SspImp, 0, len(auctionLotsMap))
+		sspResponseDto.Imp = make([]models.SspImp, 0, sspTilesLen)
 
 		for _, sspTiles := range sspRequestDto.Tiles {
-			winerImp, ok := auctionLotsMap[sspTiles.Id]
-			if !ok {
-				log.Warn().
-					Int("request status code", http.StatusNoContent)
-				w.WriteHeader(http.StatusNoContent)
-				return
-			}
-			log.Info().Interface("winner", winerImp)
+			winerImp, _ := auctionLotsMap[sspTiles.Id]
 			sspResponseDto.Imp = append(
 				sspResponseDto.Imp,
 				models.SspImp{
@@ -258,7 +251,6 @@ func calculateAuctionParams(
 }
 
 func calculateWiners(sspLots map[uint][]*models.AuctionBid) error {
-	log.Info().Interface("row", sspLots)
 	for key, val := range sspLots {
 		if len(val) == 0 {
 			return errors.New("empty imp")
