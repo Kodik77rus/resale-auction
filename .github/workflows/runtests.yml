@@ -52,7 +52,7 @@ jobs:
       - name: Making it executable
         run: chmod +x builds/ssp
 
-      run a battery of tests
+      # run a battery of tests
       - name: happy path
         run: (cd builds && ./tests -test.v -test.run Test_HappyPath) && sleep 1
 
