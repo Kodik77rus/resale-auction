@@ -132,11 +132,21 @@ func InitAuction(
 		log.Info().Interface("dsp resps", dspsResponsesInfo).Msg("dsp resps")
 
 		if err := calculateAuctionParams(dspsResponsesInfo, auctionLotsMap); err != nil {
+			log.Error().
+				Err(err).
+				Int("request status code", http.StatusNoContent).
+				Interface("auction paramas", auctionLotsMap).
+				Msg("failed calculate auction paramas")
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 
-		if err := calculateWiners(auctionLotsMap); err != nil {
+		if err := calculateWinners(auctionLotsMap); err != nil {
+			log.Error().
+				Err(err).
+				Int("request status code", http.StatusNoContent).
+				Interface("auction paramas", auctionLotsMap).
+				Msg("failed calculate winners")
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
@@ -250,7 +260,7 @@ func calculateAuctionParams(
 	return nil
 }
 
-func calculateWiners(sspLots map[uint][]*models.AuctionBid) error {
+func calculateWinners(sspLots map[uint][]*models.AuctionBid) error {
 	for key, val := range sspLots {
 		if len(val) == 0 {
 			return errors.New("empty imp")
@@ -258,7 +268,6 @@ func calculateWiners(sspLots map[uint][]*models.AuctionBid) error {
 		sort.SliceStable(val, func(i, j int) bool {
 			return val[i].Imp.Price > val[j].Imp.Price
 		})
-		log.Error().Interface("sorted", val).Msg("sorted")
 		sspLots[key] = val
 	}
 	return nil
