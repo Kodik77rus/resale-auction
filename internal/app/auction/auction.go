@@ -11,6 +11,7 @@ import (
 	"github.com/Kodik77rus/resale-auction/internal/pkg/models"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/utils"
 	"github.com/asaskevich/govalidator"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -164,7 +165,11 @@ func InitAuction(
 
 		// log.Info().Interface("dsp resps", validDspsResps)
 
-		calculateAuctionParams(validDspsResps, auctionLotsMap)
+		if err := calculateAuctionParams(validDspsResps, auctionLotsMap); err != nil {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
 		calculateWiners(auctionLotsMap)
 
 		// log.Info().Interface("auction result", auctionLotsMap).Msg("auction result")
@@ -261,7 +266,7 @@ func InitAuction(
 func calculateAuctionParams(
 	dspsResp []*models.DspBidRequestInfo,
 	sspLots map[uint][]*models.AuctionBid,
-) {
+) error {
 	for _, dsp := range dspsResp {
 		for _, dspImp := range dsp.DspBidResponse.Imp {
 			bids, ok := sspLots[dspImp.Id]
@@ -270,7 +275,7 @@ func calculateAuctionParams(
 					Interface("dsp", dsp.DspInfo).
 					Interface("imp", dspImp).
 					Msg("unknown dsp imp id")
-				continue
+				return errors.New("unknown dsp imp id")
 			}
 			sspLots[dspImp.Id] = append(bids, &models.AuctionBid{
 				Dsp: dsp.DspInfo,
@@ -278,6 +283,7 @@ func calculateAuctionParams(
 			})
 		}
 	}
+	return nil
 }
 
 func calculateWiners(sspLots map[uint][]*models.AuctionBid) {
