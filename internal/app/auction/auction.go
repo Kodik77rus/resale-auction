@@ -200,26 +200,26 @@ func InitAuction(
 		w.Write(resp)
 	}
 
-	logMiddleware := func(next http.Handler) http.Handler {
-		return http.HandlerFunc(
-			func(w http.ResponseWriter, r *http.Request) {
-				log.Info().Msgf(
-					"%s %s from %v",
-					r.Method,
-					r.URL.Path,
-					r.RemoteAddr,
-				)
-				start := time.Now()
-				next.ServeHTTP(w, r)
-				log.Info().Msgf(
-					"%s %s from %v duration: %v",
-					r.Method,
-					r.URL.Path,
-					r.RemoteAddr,
-					time.Since(start),
-				)
-			})
-	}
+	// logMiddleware := func(next http.Handler) http.Handler {
+	// 	return http.HandlerFunc(
+	// 		func(w http.ResponseWriter, r *http.Request) {
+	// 			log.Info().Msgf(
+	// 				"%s %s from %v",
+	// 				r.Method,
+	// 				r.URL.Path,
+	// 				r.RemoteAddr,
+	// 			)
+	// 			start := time.Now()
+	// 			next.ServeHTTP(w, r)
+	// 			log.Info().Msgf(
+	// 				"%s %s from %v duration: %v",
+	// 				r.Method,
+	// 				r.URL.Path,
+	// 				r.RemoteAddr,
+	// 				time.Since(start),
+	// 			)
+	// 		})
+	// }
 
 	timeOutMiddleware := func(next http.Handler, duration time.Duration) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -246,7 +246,9 @@ func InitAuction(
 	mu.Handle(
 		"/placements/request",
 		timeOutMiddleware(
-			logMiddleware(http.HandlerFunc(handler)),
+			// logMiddleware(
+			http.HandlerFunc(handler),
+			// ),
 			config.SSP_TIMEOUT,
 		),
 	)
