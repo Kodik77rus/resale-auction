@@ -105,16 +105,19 @@ func (b *BidRequester) Send(
 					Err(err).
 					Interface("dsp info", dspRespInfo).
 					Msg("failed validate dsp response EMPTY_FIELD || WRONG_SCHEMA")
+				return
 			}
 			if !ok {
 				log.Warn().
 					Interface("dsp info", dspRespInfo).
 					Msg("invalid dsp response")
+				return
 			}
 			if bidRequest.Id != dspBidResponseDto.Id {
 				log.Warn().
 					Interface("dsp info", dspRespInfo).
 					Msg("invalid dsp response")
+				return
 			}
 
 			DspBidRequestInfo <- &dspRespInfo
