@@ -9,6 +9,7 @@ import (
 	"github.com/Kodik77rus/resale-auction/internal/pkg/http_client"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/models"
 	"github.com/Kodik77rus/resale-auction/internal/pkg/utils"
+	"github.com/asaskevich/govalidator"
 	"github.com/rs/zerolog/log"
 )
 
@@ -80,6 +81,13 @@ func (b *BidRequester) Send(
 
 			var dspBidResponseDto models.DspBidResponse
 
+			if ok := utils.IsValidJson(respBody); !ok {
+				log.Error().
+					Interface("bid request", dspRespInfo).
+					Msg("invalid dsp response body")
+				return
+			}
+
 			if err := utils.JsonUnmarshal(respBody, &dspBidResponseDto); err != nil {
 				log.Error().
 					Err(err).
@@ -90,6 +98,24 @@ func (b *BidRequester) Send(
 			}
 
 			dspRespInfo.DspBidResponse = &dspBidResponseDto
+
+			ok, err := govalidator.ValidateStruct(dspBidResponseDto)
+			if err != nil {
+				log.Error().
+					Err(err).
+					Interface("dsp info", dspRespInfo).
+					Msg("failed validate dsp response EMPTY_FIELD || WRONG_SCHEMA")
+			}
+			if !ok {
+				log.Warn().
+					Interface("dsp info", dspRespInfo).
+					Msg("invalid dsp response")
+			}
+			if bidRequest.Id != dspBidResponseDto.Id {
+				log.Warn().
+					Interface("dsp info", dspRespInfo).
+					Msg("invalid dsp response")
+			}
 
 			DspBidRequestInfo <- &dspRespInfo
 		}(dsp)

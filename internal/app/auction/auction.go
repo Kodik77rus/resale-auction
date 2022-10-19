@@ -129,43 +129,9 @@ func InitAuction(
 			return
 		}
 
-		validDspsResps := make([]*models.DspBidRequestInfo, 0, dspResponsesCount)
-
-		for _, dspResp := range dspsResponsesInfo {
-			ok, err := govalidator.ValidateStruct(dspResp.DspBidResponse)
-			if err != nil {
-				log.Error().
-					Err(err).
-					Interface("dsp info", dspResp).
-					Msg("failed validate dsp response EMPTY_FIELD || WRONG_SCHEMA")
-				continue
-			}
-			if !ok {
-				log.Warn().
-					Interface("dsp info", dspResp).
-					Msg("invalid dsp response")
-				continue
-			}
-			if dspResp.DspBidResponse.Id != sspRequestDto.Id {
-				log.Warn().
-					Interface("dsp response id not equal ssp request id", *dspResp).
-					Msg("invalid dsp response")
-				continue
-			}
-			validDspsResps = append(validDspsResps, dspResp)
-		}
-
-		if len(validDspsResps) == 0 {
-			log.Warn().
-				Int("request status code", http.StatusNoContent).
-				Msg("no valids dsps responses")
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
 		// log.Info().Interface("dsp resps", validDspsResps)
 
-		if err := calculateAuctionParams(validDspsResps, auctionLotsMap); err != nil {
+		if err := calculateAuctionParams(dspsResponsesInfo, auctionLotsMap); err != nil {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
@@ -287,6 +253,7 @@ func calculateAuctionParams(
 }
 
 func calculateWiners(sspLots map[uint][]*models.AuctionBid) {
+	log.Info().Interface("row", sspLots)
 	for key, val := range sspLots {
 		sort.SliceStable(val, func(i, j int) bool {
 			return val[i].Imp.Price > val[j].Imp.Price
