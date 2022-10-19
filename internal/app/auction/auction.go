@@ -129,7 +129,7 @@ func InitAuction(
 			return
 		}
 
-		log.Info().Interface("dsp resps", dspsResponsesInfo)
+		log.Info().Interface("dsp resps", dspsResponsesInfo).Msg("dsp resps")
 
 		if err := calculateAuctionParams(dspsResponsesInfo, auctionLotsMap); err != nil {
 			w.WriteHeader(http.StatusNoContent)

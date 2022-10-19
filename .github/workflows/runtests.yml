@@ -71,8 +71,8 @@ jobs:
       # - name: not happy at all, medium difficulty
       #   run: (cd builds && ./tests -test.v -test.run Test_NotHappyMedium) && sleep 1
 
-      # - name: not happy at all, hard difficulty
-      #   run: (cd builds && ./tests -test.v -test.run Test_NotHappyHard) && sleep 1
+      - name: not happy at all, hard difficulty
+        run: (cd builds && ./tests -test.v -test.run Test_NotHappyHard) && sleep 1
 
       - name: not happy at all, hardcore difficulty
         run: (cd builds && ./tests -test.v -test.run Test_NotHappyHardcore) && sleep 1
